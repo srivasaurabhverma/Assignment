@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useEffect, useState } from "react";
+import "./App.css";
 
-function App() {
+export default function Countdown() {
+  const [num, setNum] = useState(10000);
+  const [pause, setPause] = useState(false);
+
+  let intervalRef = useRef();
+
+  const decreaseNum = () => setNum((prev) => prev - 1);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(decreaseNum, 1000);
+
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const handleClick = () => {
+    if (!pause) {
+      clearInterval(intervalRef.current);
+    } else {
+      intervalRef.current = setInterval(decreaseNum, 1000);
+    }
+    setPause((prev) => !prev);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 className="Title">Basic React App</h1>
+      <div className="Container">
+        <div className="number">{num}</div>
+        <button onClick={handleClick} className="btn">
+          {pause ? "Run" : "Pause"}
+        </button>
+      </div>
+    </>
   );
 }
-
-export default App;
